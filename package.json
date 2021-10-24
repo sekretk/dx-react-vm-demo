@@ -68,5 +68,14 @@
     "webpack-dev-server": "^4.3.1",
     "webpack-merge": "^5.8.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@devexperts/remote-data-ts": "^2.1.1",
+    "@devexperts/rx-utils": "^1.0.0-alpha.14",
+    "fp-ts": "^2.11.5",
+    "fp-ts-rxjs": "^0.6.15",
+    "io-ts": "^2.2.16",
+    "io-ts-types": "^0.5.16",
+    "rxjs": "^7.4.0",
+    "rxjs-compatibility": "0.0.3"
+  }
 }
