@@ -75,7 +75,8 @@
     "fp-ts-rxjs": "^0.6.15",
     "io-ts": "^2.2.16",
     "io-ts-types": "^0.5.16",
-    "rxjs": "^7.4.0",
-    "rxjs-compatibility": "0.0.3"
+    "rxjs": "^6.5.4",
+    "rxjs-compatibility": "0.0.3",
+    "yarn": "^1.22.17"
   }
 }
