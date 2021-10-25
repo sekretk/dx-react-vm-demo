@@ -9,6 +9,7 @@ import { observable } from '@devexperts/rx-utils/dist/observable.utils';
 import { delay, distinctUntilChanged, share, switchMap } from 'rxjs/operators';
 import { render } from 'react-dom';
 import { merge, Observable, of } from 'rxjs';
+import { array } from 'io-ts';
 
 const useObservable = <A>(fa: Observable<A>, initial: A): A => {
 	const [a, setA] = useState(initial);
@@ -56,16 +57,49 @@ const userIdNameMapper: Record<UserID, string> = {
 	'3': 'Moe Sizlak'
 };
 
-const getMockDelay = () => 1000*(1 + Math.floor(Math.random()*1000000)%5);
+const getMockDelay = () => 1_000 * (1 + Math.floor(Math.random()*1_000_000) % 5);
+
 interface UserService {
 	readonly getAllUserIds: () => LiveData<Error, string[]>;
 	readonly getUserName: (id: string) => LiveData<Error, string>;
-	readonly updateUserName: (id: string, name: string) => LiveData<Error, void>;
+	readonly updateUserName: (id: string) => (name: string) => LiveData<Error, void>;
 }
+
+const userService: Context<{ apiURL: string }, UserService> = () =>
+	sink.of({
+		getAllUserIds: () => merge(
+			of(pending),
+			of(success(['1', '2', '3'])).pipe(delay(1500)),
+		),
+		getUserName: (id) => merge(
+			of(pending),
+			of(success(userIdNameMapper[id])).pipe(delay(getMockDelay()))
+		),
+		updateUserName: (id) => (name) => {
+			console.log('update user name', id, name);
+			userIdNameMapper[id] = name;
+			return of(success<Error, void>(undefined));
+		}
+	});
 
 interface NewUserProfileViewModel {
 	(id: string): Sink<UserProfileViewModel>;
 }
+
+const us = context.key<UserService>()('asda');
+
+const tt = context.combine(
+	us,
+	(srv) => 1
+);
+
+const tt2 = context.combine(
+	us,
+	(srv) => 1
+);
+
+const sa = context.key<UserService>()('userService');
+
 const newUserProfileViewModel = context.combine(
 	context.key<UserService>()('userService'),
 	(userService): NewUserProfileViewModel => id => {
@@ -73,8 +107,7 @@ const newUserProfileViewModel = context.combine(
 		const updateNameEffect = pipe(
 			updateNameEvent,
 			distinctUntilChanged(),
-			delay(5000),
-			switchMap(name => userService.updateUserName(id, name)),
+			switchMap(userService.updateUserName(id)),
 			share(),
 		);
 		return newSink(
@@ -92,9 +125,9 @@ interface UserProfileContainerProps {
 }
 const UserProfileContainer = context.combine(
 	newUserProfileViewModel,
-	newUserProfileViewModel =>
+	ctx =>
 		memo((props: UserProfileContainerProps) => {
-			const vm = useSink(() => newUserProfileViewModel(props.id), [props.id]);
+			const vm = useSink(() => ctx(props.id), [props.id]);
 			const name = useObservable(vm.name, pending);
 			return createElement(UserProfile, { name, onNameUpdate: vm.updateName });
 		}),
@@ -103,6 +136,7 @@ const UserProfileContainer = context.combine(
 interface AppProps {
 	readonly userIds: RemoteData<Error, string[]>;
 }
+
 const App = context.combine(
 	UserProfileContainer,
 	UserProfileContainer =>
@@ -144,19 +178,6 @@ const AppContainer = context.combine(
 			return createElement(App, { userIds });
 		}),
 );
-
-const userService: Context<{ apiURL: string }, UserService> = () =>
-	sink.of({
-		getAllUserIds: () => merge(
-			of(pending),
-			of(success(['1', '2', '3'])).pipe(delay(1500)),
-		),
-		getUserName: (id) => merge(
-			of(pending),
-			of(success(userIdNameMapper[id])).pipe(delay(getMockDelay()))
-		),
-		updateUserName: () => of(success<Error, void>(undefined))
-	});
 
 const Root = context.combine(
 	context.defer(AppContainer, 'userService'),
