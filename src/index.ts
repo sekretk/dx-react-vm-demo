@@ -1,14 +1,14 @@
-import { fold, pending, RemoteData } from '@devexperts/remote-data-ts';
+import { fold, pending, RemoteData, success } from '@devexperts/remote-data-ts';
 import { constNull } from 'fp-ts/lib/function';
 import { createElement, memo, useEffect, useMemo, useState } from 'react';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { LiveData } from '@devexperts/rx-utils/dist/live-data.utils';
-import { newSink, Sink } from '@devexperts/rx-utils/dist/sink2.utils';
+import { newSink, Sink, sink } from '@devexperts/rx-utils/dist/sink2.utils';
 import { Context, context } from '@devexperts/rx-utils/dist/context2.utils';
 import { observable } from '@devexperts/rx-utils/dist/observable.utils';
 import { distinctUntilChanged, share, switchMap } from 'rxjs/operators';
 import { render } from 'react-dom';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 const useObservable = <A>(fa: Observable<A>, initial: A): A => {
 	const [a, setA] = useState(initial);
@@ -125,7 +125,11 @@ const AppContainer = context.combine(App, newAppViewModel, (App, newAppViewModel
 	}),
 );
 
-declare const userService: Context<{ apiURL: string }, UserService>;
+const userService: Context<{ apiURL: string }, UserService> = () => sink.of({
+	getAllUserIds: () => of(success(['1', '2', '3'])),
+	getUserName: () => of(success('Homer J. Simpson')),
+	updateUserName: () => of(success<Error, void>(undefined))
+});
 
 const Root = context.combine(context.defer(AppContainer, 'userService'), userService, (getAppContainer, userService) =>
 	memo(() => {
