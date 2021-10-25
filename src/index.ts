@@ -6,9 +6,9 @@ import { LiveData } from '@devexperts/rx-utils/dist/live-data.utils';
 import { newSink, Sink, sink } from '@devexperts/rx-utils/dist/sink2.utils';
 import { Context, context } from '@devexperts/rx-utils/dist/context2.utils';
 import { observable } from '@devexperts/rx-utils/dist/observable.utils';
-import { distinctUntilChanged, share, switchMap } from 'rxjs/operators';
+import { delay, distinctUntilChanged, share, switchMap } from 'rxjs/operators';
 import { render } from 'react-dom';
-import { Observable, of } from 'rxjs';
+import { merge, Observable, of } from 'rxjs';
 
 const useObservable = <A>(fa: Observable<A>, initial: A): A => {
 	const [a, setA] = useState(initial);
@@ -47,11 +47,22 @@ interface UserProfileViewModel {
 	readonly name: LiveData<Error, string>;
 	readonly updateName: (name: string) => void;
 }
+
+type UserID = '1' | '2' | '3';
+
+const userIdNameMapper: Record<UserID, string> = {
+	'1': 'Homer J. Simpson',
+	'2': 'Barney Humble',
+	'3': 'Moe Sizlak'
+};
+
+const getMockDelay = () => 1000*(1 + Math.floor(Math.random()*1000000)%5);
 interface UserService {
 	readonly getAllUserIds: () => LiveData<Error, string[]>;
 	readonly getUserName: (id: string) => LiveData<Error, string>;
 	readonly updateUserName: (id: string, name: string) => LiveData<Error, void>;
 }
+
 interface NewUserProfileViewModel {
 	(id: string): Sink<UserProfileViewModel>;
 }
@@ -62,6 +73,7 @@ const newUserProfileViewModel = context.combine(
 		const updateNameEffect = pipe(
 			updateNameEvent,
 			distinctUntilChanged(),
+			delay(5000),
 			switchMap(name => userService.updateUserName(id, name)),
 			share(),
 		);
@@ -78,30 +90,34 @@ const newUserProfileViewModel = context.combine(
 interface UserProfileContainerProps {
 	readonly id: string;
 }
-const UserProfileContainer = context.combine(newUserProfileViewModel, newUserProfileViewModel =>
-	memo((props: UserProfileContainerProps) => {
-		const vm = useSink(() => newUserProfileViewModel(props.id), [props.id]);
-		const name = useObservable(vm.name, pending);
-		return createElement(UserProfile, { name, onNameUpdate: vm.updateName });
-	}),
+const UserProfileContainer = context.combine(
+	newUserProfileViewModel,
+	newUserProfileViewModel =>
+		memo((props: UserProfileContainerProps) => {
+			const vm = useSink(() => newUserProfileViewModel(props.id), [props.id]);
+			const name = useObservable(vm.name, pending);
+			return createElement(UserProfile, { name, onNameUpdate: vm.updateName });
+		}),
 );
 
 interface AppProps {
 	readonly userIds: RemoteData<Error, string[]>;
 }
-const App = context.combine(UserProfileContainer, UserProfileContainer =>
-	memo((props: AppProps) =>
-		pipe(
-			props.userIds,
-			renderRemoteData(ids =>
-				createElement(
-					'div',
-					null,
-					ids.map(id => createElement(UserProfileContainer, { key: id, id })),
+const App = context.combine(
+	UserProfileContainer,
+	UserProfileContainer =>
+		memo((props: AppProps) =>
+			pipe(
+				props.userIds,
+				renderRemoteData(ids =>
+					createElement(
+						'div',
+						null,
+						ids.map(id => createElement(UserProfileContainer, { key: id, id })),
+					),
 				),
 			),
 		),
-	),
 );
 
 interface AppViewModel {
@@ -117,25 +133,40 @@ const newAppViewModel = context.combine(
 	}),
 );
 
-const AppContainer = context.combine(App, newAppViewModel, (App, newAppViewModel) =>
-	memo(() => {
-		const vm = useMemo(() => newAppViewModel(), []);
-		const userIds = useObservable(vm.userIds, pending);
-		return createElement(App, { userIds });
-	}),
+const AppContainer = context.combine(
+	App,
+	newAppViewModel,
+	(App, newAppViewModel) =>
+		memo(() => {
+			console.log('AppContainer create');
+			const vm = useMemo(() => newAppViewModel(), []);
+			const userIds = useObservable(vm.userIds, pending);
+			return createElement(App, { userIds });
+		}),
 );
 
-const userService: Context<{ apiURL: string }, UserService> = () => sink.of({
-	getAllUserIds: () => of(success(['1', '2', '3'])),
-	getUserName: () => of(success('Homer J. Simpson')),
-	updateUserName: () => of(success<Error, void>(undefined))
-});
+const userService: Context<{ apiURL: string }, UserService> = () =>
+	sink.of({
+		getAllUserIds: () => merge(
+			of(pending),
+			of(success(['1', '2', '3'])).pipe(delay(1500)),
+		),
+		getUserName: (id) => merge(
+			of(pending),
+			of(success(userIdNameMapper[id])).pipe(delay(getMockDelay()))
+		),
+		updateUserName: () => of(success<Error, void>(undefined))
+	});
 
-const Root = context.combine(context.defer(AppContainer, 'userService'), userService, (getAppContainer, userService) =>
-	memo(() => {
-		const AppContainer = useSink(() => getAppContainer({ userService }), []);
-		return createElement(AppContainer, {});
-	}),
+const Root = context.combine(
+	context.defer(AppContainer, 'userService'),
+	userService,
+	(getAppContainer, userService) =>
+		memo(() => {
+			console.log('Root create');
+			const AppContainer = useSink(() => getAppContainer({ userService }), []);
+			return createElement(AppContainer, {});
+		}),
 );
 
 const apiURL = '/api';
@@ -143,4 +174,5 @@ const Index = memo(() => {
 	const Resolved = useSink(() => Root({ apiURL }), []);
 	return createElement(Resolved, {});
 });
+
 render(createElement(Index), document.getElementById('root'));
