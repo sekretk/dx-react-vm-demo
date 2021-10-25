@@ -3,7 +3,7 @@
 
 * **[Remote Data](https://github.com/devexperts/remote-data-ts)** 
 * **[dx-platform](https://github.com/devexperts/dx-platform)**
-* **[Typescript](https://www.typescriptlang.org/)** (4.x)
+* **[RXJS](https://rxjs.dev/)** (6.x)
 
 ## Installation
 1. Clone/download repo
