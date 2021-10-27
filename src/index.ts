@@ -9,7 +9,6 @@ import { observable } from '@devexperts/rx-utils/dist/observable.utils';
 import { delay, distinctUntilChanged, share, switchMap } from 'rxjs/operators';
 import { render } from 'react-dom';
 import { merge, Observable, of } from 'rxjs';
-import { array } from 'io-ts';
 
 const useObservable = <A>(fa: Observable<A>, initial: A): A => {
 	const [a, setA] = useState(initial);
@@ -85,20 +84,6 @@ const userService: Context<{ apiURL: string }, UserService> = () =>
 interface NewUserProfileViewModel {
 	(id: string): Sink<UserProfileViewModel>;
 }
-
-const us = context.key<UserService>()('asda');
-
-const tt = context.combine(
-	us,
-	(srv) => 1
-);
-
-const tt2 = context.combine(
-	us,
-	(srv) => 1
-);
-
-const sa = context.key<UserService>()('userService');
 
 const newUserProfileViewModel = context.combine(
 	context.key<UserService>()('userService'),
