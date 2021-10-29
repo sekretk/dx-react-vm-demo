@@ -13,7 +13,7 @@ const pred: Predicate<TIssue> = (val) => val.b === 5;
 const getFilteredHeader = (data: Option<{f: Option<TIssue>, s: Option<TIssue>}>): Option<TIssue> => 
     pipe(
         data,
-        option.map(xxx => [xxx.f, xxx.s]),
+        option.map(xxx => [xxx.f, xxx.s]),//filtermap
         option.map(array.filter(option.fold(constant(false), pred))),
         option.chain(array.head),
         option.flatten
