@@ -10,11 +10,7 @@ type ZipWithName<T extends Array<any>, U extends Array<string>> =
         // eslint-disable-next-line @typescript-eslint/ban-types
         : {};
         
-// type Flavored<A, Tag extends string> = A & { _flavor: Uppercase<Tag> };
-// const FlavoredFabric = <T, S extends string>() => (val: T): Flavored<T, S> => val as Flavored<T, S>;
 
-
-//const StringLiteralFabric = FlavoredFabric<Array<string>, 'string_literal'>();
 
 const mergeTuple = <T extends Array<any>, U extends Array<string>>(names: U, ...tuple: T): ZipWithName<T, U> =>
     names.reduce((acc, cur, idx) => ({ ...acc, [cur]: tuple[idx] }), {}) as ZipWithName<T, U>;
