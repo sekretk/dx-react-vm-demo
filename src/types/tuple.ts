@@ -12,13 +12,18 @@ type ZipWithName<T extends Array<any>, U extends Array<string>> =
         
 
 
-const mergeTuple = <T extends Array<any>, U extends Array<string>>(names: U, ...tuple: T): ZipWithName<T, U> =>
+const mergeTuple = <U extends Array<string>>(...names: U) => <T extends Array<any>>(...tuple: T): ZipWithName<T, U> =>
     names.reduce((acc, cur, idx) => ({ ...acc, [cur]: tuple[idx] }), {}) as ZipWithName<T, U>;
-
-const mergeTupleWrapper = <T extends Array<any>, U extends Array<string>>(names: U, ...tuple: T): ZipWithName<T, U> => mergeTuple(names, tuple);
+    
+//returns: {some: number, val: string}
+const mergeObject01 = mergeTuple('some', 'val')(1, 'ss');
 
 const asTupleOfLiterals= <T extends string, U extends [T, ...T[]]>(tuple: U):  U => tuple;
 
 const vall = asTupleOfLiterals(['some', 'val']);
 
-const mergeObject01 = mergeTupleWrapper(asTupleOfLiterals(['some', 'val']), 1, 'ss');
+
+
+
+
+
