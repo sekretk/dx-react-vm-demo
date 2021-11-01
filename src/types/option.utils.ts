@@ -2,6 +2,7 @@ import { None, Option, Some } from "fp-ts/lib/Option"
 import { IfStrictEquals, IsTrue } from "./test-utils";
 import { TypeError } from './generic'
 
+//type UnboxedOption<U> = (U extends Option<infer A> ? (k: A) => void : never) extends (k: infer I) => void ? I : never;
 type UnWrapperOption<T> = T extends Some<infer A> ? UnWrapperOption<A> : T extends None ? never : T;
 
 const GRAND_OPTION_COMPACT_ERROR = 'GrandOptionCompact can unwrap only HKT Options';
