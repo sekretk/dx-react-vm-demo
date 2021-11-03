@@ -4,7 +4,8 @@ import { sequenceT } from "fp-ts/lib/Apply"
 import { some } from "fp-ts/lib/Option"
 import { pipe } from "fp-ts/lib/function"
 import { never } from "fp-ts/lib/Task"
-import { GrandOptionCompact } from "../types/option.utils"
+import { GrandOptionCompact, OptionMergeResult } from "../types/option.utils"
+import { KeyValueTuple } from "../types/generic"
 
 
 //expected sugnature: [Option<number>, Option<boolean>] -> Option<[number, boolean]>
@@ -38,3 +39,18 @@ export const grandOptionCompact = <T>(opt: T): GrandOptionCompact<T> => {
     //@ts-ignore 
     return opt;
 }
+
+//SAME but fro Options!
+
+//type optionMergeResultEx = OptionMergeResult<[['a', Option<number>], ['b', Option<string>]]>
+
+const optionMerge = <T extends Array<KeyValueTuple<Option<unknown>, R>>, R extends string>(...args: T): Option<OptionMergeResult<T>> => 
+    args.reduce((acc, [name, value]) => {
+        return pipe(
+            sequenceT(option.Apply)(acc, value),
+            option.map(([a, b]) => ({...a, ...{[name]: b}}))
+        )
+    }
+    , some({})) as Option<OptionMergeResult<T>>;
+
+const optiRes = optionMerge(['val', some(1)], ['foo', some(true)], ['bar', some('val')]);
