@@ -15,7 +15,8 @@ const result = sequenceT(option.Apply)(some(1), some(true))
 //to use in pipe:
 //(Option<R>) -> (Option<T>) -> Option<[R,T]>
 
-const optionCombine = <A, B>(aux: Option<B>) => (src: Option<A>): Option<[A, B]> => sequenceT(option.Apply)(src, aux);
+const optionCombine = <A, B>(aux: Option<B>) => (src: Option<A>): Option<[A, B]> => 
+    sequenceT(option.Apply)(src, aux);
 
 const res01 = pipe(
     some(true),
