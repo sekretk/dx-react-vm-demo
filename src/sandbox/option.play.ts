@@ -40,7 +40,6 @@ export const grandOptionCompact = <T>(opt: T): GrandOptionCompact<T> => {
     return opt;
 }
 
-//SAME but fro Options!
 
 //type optionMergeResultEx = OptionMergeResult<[['a', Option<number>], ['b', Option<string>]]>
 
