@@ -2,7 +2,7 @@ import {matchConfig} from '@babakness/exhaustive-type-checking';
 
 describe('test for different exhaustive check modes', () => {
 
-    type Fruit = 'banana' | 'orange' //| 'the_new_one';
+    type Fruit = 'banana' | 'orange' //|'the_new_one';
 
     describe('external @babakness/exhaustive-type-checking', () => {
 
@@ -22,12 +22,12 @@ describe('test for different exhaustive check modes', () => {
 
         const exhaustiveCheck = (value: never) => value;
 
-        function makeDessert(fruit: Fruit) {
+        const makeDessert = (fruit: Fruit) => {
             switch (fruit) {
                 case 'banana': return 'Banana Shake'
                 case 'orange': return 'Orange Juice'
             }
-            exhaustiveCheck(fruit)
+            //exhaustiveCheck(fruit)
         }
 
         it('Exhaustive branching with record', () => {

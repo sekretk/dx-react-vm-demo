@@ -20,8 +20,8 @@ const unCurryFunction = <T>(func: T): UnCurry<T> => uncurry(func) as UnCurry<T>;
 //type TUncurryIssue = UnCurry<typeof curFunc>;
 
 //Check function
-const tupFunction = (a: string) => (b: boolean) => (c: number) => a + b + c;
-const middleFunc = unCurryFunction(tupFunction);
+const issueFunction = (a: string) => (b: boolean) => (c: number) => a + b + c;
+const middleFunc = unCurryFunction(issueFunction);
 const result = middleFunc('hello', true, 42);
 
 export const tupleArgs = <A extends Array<unknown>, R>(func: (...args: A) => R): ((args: A) => R) => args => func(...args);
