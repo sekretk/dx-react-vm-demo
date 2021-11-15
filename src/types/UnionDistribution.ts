@@ -1,3 +1,4 @@
+import { T } from "ts-toolbelt";
 import { IfStrictEquals, IsTrue } from "./test-utils";
 
 type LookIntoArray<T> = T extends Array<infer F> ? F : never;
