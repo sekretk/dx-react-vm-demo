@@ -1,3 +1,5 @@
+
+//TODO: add description and examples
 type UnCurry<T, Thead extends any[] = []> =
     T extends (_: infer A) => (__: infer B) => infer R
         ? UnCurry<(_: B) => R, [...Thead, A]>

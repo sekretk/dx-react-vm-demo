@@ -1,5 +1,7 @@
 import { IfStrictEquals, IsTrue, IsFalse } from "./test-utils";
 
+//TODO: add description, motivation and usage
+
 type Mixed = {
     a: string;
     b: string;
