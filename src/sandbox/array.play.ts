@@ -1,7 +1,7 @@
 import { array, option } from "fp-ts"
 import { sequenceT } from "fp-ts/lib/Apply";
 import { constant, pipe } from "fp-ts/lib/function"
-import { Option, sequenceArray, some } from 'fp-ts/lib/Option';
+import { getLastMonoid, Option, sequenceArray, some } from 'fp-ts/lib/Option';
 import { Predicate } from "fp-ts/lib/Predicate";
 
 type TIssue = {

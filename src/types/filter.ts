@@ -40,3 +40,31 @@ type TESTCASE = [
   //T -> {K in keyof T extends string}
 
   //Mixed => {a: string, b: string}
+
+
+  //-------FILTERED_KEYS--------
+
+type FiltedKeys<T, F> = {
+	[K in keyof T]: IfStrictEquals<T[K], F, K, never>
+}[keyof T];
+
+type some = FiltedKeys<Mixed, string>
+
+
+//--------FUNTIONAL KEYS------
+type FunctionsKeys<T> = {
+	[K in keyof T]: T[K] extends (..._: Array<any>) => any ? K : never
+}[keyof T]
+
+type Issuer = {
+    a: boolean,
+    c: () => void,
+    d: (_: string) => boolean,
+    e: (_: string, __: boolean) => void
+}
+
+type tt = FunctionsKeys<Issuer>;
+
+type TESTCASE_FunctionsKeys = [
+    IsTrue<IfStrictEquals<FunctionsKeys<Issuer>, 'c' | 'd' | 'e'>>,
+]

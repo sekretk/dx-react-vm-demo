@@ -48,7 +48,7 @@ interface UserProfileViewModel {
 	readonly updateName: (name: string) => void;
 }
 
-type UserID = '1' | '2' | '3';
+type UserID = string;
 
 const userIdNameMapper: Record<UserID, string> = {
 	'1': 'Homer J. Simpson',
@@ -60,8 +60,8 @@ const getMockDelay = () => 1_000 * (1 + Math.floor(Math.random()*1_000_000) % 5)
 
 interface UserService {
 	readonly getAllUserIds: () => LiveData<Error, string[]>;
-	readonly getUserName: (id: string) => LiveData<Error, string>;
-	readonly updateUserName: (id: string) => (name: string) => LiveData<Error, void>;
+	readonly getUserName: (id: UserID) => LiveData<Error, string>;
+	readonly updateUserName: (id: UserID) => (name: string) => LiveData<Error, void>;
 }
 
 const userService: Context<{ apiURL: string }, UserService> = () =>
@@ -166,9 +166,11 @@ const AppContainer = context.combine(
 
 const Root = context.combine(
 	context.defer(AppContainer, 'userService'),
-	userService,
+	userService, //Context<{apiURL: string}, UserService> = {apiURL: string} => Sink<UserService>
 	(getAppContainer, userService) =>
 		memo(() => {
+
+			const rr = getAppContainer({userService: userService});
 			console.log('Root create');
 			const AppContainer = useSink(() => getAppContainer({ userService }), []);
 			return createElement(AppContainer, {});

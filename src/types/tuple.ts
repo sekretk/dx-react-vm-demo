@@ -18,14 +18,21 @@ const mergeTuple = <U extends Array<string>>(...names: U) => <T extends Array<an
     names.reduce((acc, cur, idx) => ({ ...acc, [cur]: tuple[idx] }), {}) as ZipWithName<T, U>;
 
 //returns: {some: number, val: string}
-const mergeObject01 = mergeTuple('some', 'val')(1, 'ss');
+const mergeObject01 = mergeTuple('some', 'val', "foo")(1, 'ss', true);
+
+//----------------------------------
+// tuple of strings to tuple of literals
 
 const asTupleOfLiterals= <T extends string, U extends [T, ...T[]]>(tuple: U):  U => tuple;
 
 const vall = asTupleOfLiterals(['some', 'val']);
+type TR01 = typeof vall;
 
+const arr = ['some', 'val'];
+type TR02 = typeof arr;
 
-
+//-----------------------------------
+//union of elements of tuple
 
 type TupleUnion<T extends Array<any>> = T extends [head: infer THead, ...rest: infer TTail] 
     ? TTail extends Array<any> 
