@@ -63,4 +63,3 @@ type OnlyTwoOTuple<T extends any[]> = OnlyTuple<T, 2>;
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const onlyTwoElemns = <T extends any[]>(...val: OnlyTwoOTuple<T>): void => {};
 onlyTwoElemns(1,2)
-

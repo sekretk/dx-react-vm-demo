@@ -1,5 +1,4 @@
-import { fold, pending, RemoteData, success } from '@devexperts/remote-data-ts';
-import { constNull } from 'fp-ts/lib/function';
+import { pending, RemoteData, success } from '@devexperts/remote-data-ts';
 import { createElement, memo, useEffect, useMemo, useState } from 'react';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { LiveData } from '@devexperts/rx-utils/dist/live-data.utils';
@@ -9,6 +8,7 @@ import { observable } from '@devexperts/rx-utils/dist/observable.utils';
 import { delay, distinctUntilChanged, share, switchMap } from 'rxjs/operators';
 import { render } from 'react-dom';
 import { merge, Observable, of } from 'rxjs';
+import { Profile, renderRemoteData } from './profile';
 
 const useObservable = <A>(fa: Observable<A>, initial: A): A => {
 	const [a, setA] = useState(initial);
@@ -22,27 +22,6 @@ const useSink = <A>(factory: () => Sink<A>, dependencies: unknown[]): A => {
 	useEffect(() => () => subscription.unsubscribe(), [subscription]);
 	return sa.value;
 };
-
-const renderRemoteData = <A>(
-	onSuccess: (a: A) => JSX.Element | null,
-): ((data: RemoteData<Error, A>) => JSX.Element | null) =>
-	fold(
-		constNull,
-		() => createElement('div', null, 'pending'),
-		() => createElement('div', null, 'failure'),
-		onSuccess,
-	);
-
-interface UserProfileProps {
-	readonly name: RemoteData<Error, string>;
-	readonly onNameUpdate: (name: string) => void;
-}
-const UserProfile = memo((props: UserProfileProps) =>
-	pipe(
-		props.name,
-		renderRemoteData(name => createElement('div', null, name)),
-	),
-);
 interface UserProfileViewModel {
 	readonly name: LiveData<Error, string>;
 	readonly updateName: (name: string) => void;
@@ -105,6 +84,7 @@ const newUserProfileViewModel = context.combine(
 	},
 );
 
+
 interface UserProfileContainerProps {
 	readonly id: string;
 }
@@ -114,7 +94,7 @@ const UserProfileContainer = context.combine(
 		memo((props: UserProfileContainerProps) => {
 			const vm = useSink(() => ctx(props.id), [props.id]);
 			const name = useObservable(vm.name, pending);
-			return createElement(UserProfile, { name, onNameUpdate: vm.updateName });
+			return createElement(Profile, { name, onNameUpdate: vm.updateName });
 		}),
 );
 
@@ -169,8 +149,6 @@ const Root = context.combine(
 	userService, //Context<{apiURL: string}, UserService> = {apiURL: string} => Sink<UserService>
 	(getAppContainer, userService) =>
 		memo(() => {
-
-			const rr = getAppContainer({userService: userService});
 			console.log('Root create');
 			const AppContainer = useSink(() => getAppContainer({ userService }), []);
 			return createElement(AppContainer, {});

@@ -1,4 +1,4 @@
-import { None, Option, Some } from "fp-ts/lib/Option"
+import { None, Option, some, Some } from "fp-ts/lib/Option"
 import { IfStrictEquals, IsTrue } from "./test-utils";
 import { TypeCheckError } from './generic'
 import { sequenceT } from "fp-ts/lib/Apply";
@@ -11,13 +11,13 @@ type UnWrapperOption<T> = T extends Some<infer A> ? UnWrapperOption<A> : T exten
 export type TYPES_TEST_SUITE_UnWrapperOption = [
     IsTrue<IfStrictEquals<UnWrapperOption<Option<string>>, string>>,
     IsTrue<IfStrictEquals<UnWrapperOption<string>, string>>,
-    //IsTrue<IfStrictEquals<UnWrapperOption<Option<Option<string>>>, Option<string>>>,
+    IsTrue<IfStrictEquals<UnWrapperOption<Option<Option<string>>>, string>>,
 ]
 
 
 //--------ONCEUNWRAPPOPTION
 
-type UnWrapOption<T> = T extends Some<infer A> ? A: T extends None ? never : T;
+type UnWrapOption<T> = [T] extends [Option<infer A>] ? A: T;
 
 export type TYPES_TEST_SUITE_UnWrapOption = [
     IsTrue<IfStrictEquals<UnWrapOption<Option<string>>, string>>,
