@@ -1,3 +1,4 @@
+import { T } from "ramda";
 import { renderRemoteData } from "../profile";
 import { IfStrictEquals, IsFalse, IsTrue } from "./test-utils";
 
@@ -14,8 +15,8 @@ type MarbleTemplate<T> = keyof T | InternalMarbleTemplate<T, keyof T>;
 
 
 export type TYPES_TEST_SUITE_UnWrapOption = [
-    IsTrue<IfStrictEquals<ResolveMarble<'AB'>, Record<'A' | 'B', any>>>,
     IsFalse<IfStrictEquals<ResolveMarble<'AB'>, Record<'A' | 'B' | 'C', any>>>
+    IsTrue<IfStrictEquals<ResolveMarble<'AB'>, Record<'A' | 'B', any>>>,
 ]
 
 type Decr = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] // add to a reasonable amount
@@ -45,3 +46,18 @@ type rr = {a: string} & unknown;
 
 const ttt: MarbleObj<'ABC#$%@'>;
 
+type MarbleT = 'A' | 'B';
+type MarbleA = '-' | '^' | '|';
+
+type MarbleDetails<T extends string, R = {}> = 
+    T extends `${infer M}${infer Rest}` 
+        ? M extends MarbleA 
+            ? MarbleDetails<Rest, R>
+            : M extends MarbleT
+                ? Record<M, any> & MarbleDetails<Rest, R>
+                : 'Unknow letter'
+        : {};
+
+const funct = <T extends string>(val: T, obj: MarbleDetails<T>) => {}
+
+funct('AB---|', {B: 1, A: 'asd'})
