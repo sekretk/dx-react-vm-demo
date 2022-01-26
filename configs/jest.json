@@ -8,7 +8,7 @@
   },
   "moduleFileExtensions": ["ts", "tsx", "js", "jsx"],
   "transformIgnorePatterns": ["/node_modules/"],
-  "testRegex": "**/*.spec.tstsx",
+  "testRegex": ".spec.ts$",
   "moduleDirectories": ["node_modules"],
   "globals": {
     "DEVELOPMENT": false,

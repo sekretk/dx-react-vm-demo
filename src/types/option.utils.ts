@@ -1,4 +1,4 @@
-import { None, Option, Some } from "fp-ts/lib/Option"
+import { None, Option, some, Some } from "fp-ts/lib/Option"
 import { IfStrictEquals, IsTrue } from "./test-utils";
 import { TypeCheckError } from './generic'
 import { sequenceT } from "fp-ts/lib/Apply";
@@ -7,6 +7,27 @@ import { pipe } from "fp-ts/lib/function";
 
 //type UnboxedOption<U> = (U extends Option<infer A> ? (k: A) => void : never) extends (k: infer I) => void ? I : never;
 type UnWrapperOption<T> = T extends Some<infer A> ? UnWrapperOption<A> : T extends None ? never : T;
+
+export type TYPES_TEST_SUITE_UnWrapperOption = [
+    IsTrue<IfStrictEquals<UnWrapperOption<Option<string>>, string>>,
+    IsTrue<IfStrictEquals<UnWrapperOption<string>, string>>,
+    IsTrue<IfStrictEquals<UnWrapperOption<Option<Option<string>>>, string>>,
+]
+
+
+//--------ONCEUNWRAPPOPTION
+
+type UnWrapOption<T> = [T] extends [Option<infer A>] ? A: T;
+
+export type TYPES_TEST_SUITE_UnWrapOption = [
+    IsTrue<IfStrictEquals<UnWrapOption<Option<string>>, string>>,
+    IsTrue<IfStrictEquals<UnWrapOption<string>, string>>,
+    IsTrue<IfStrictEquals<UnWrapOption<Option<Option<string>>>, Option<string>>>,
+]
+
+
+
+//-----------GRAND_OPTION_COMPACT------
 
 const GRAND_OPTION_COMPACT_ERROR = 'GrandOptionCompact can unwrap only HKT Options';
 

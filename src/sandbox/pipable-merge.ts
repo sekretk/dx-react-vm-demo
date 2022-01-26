@@ -5,6 +5,7 @@ import { sequenceT } from 'fp-ts/lib/Apply';
 import { KeyValueTuple, TypeCheckError } from '../types/generic';
 import { OptionMergeResult } from '../types/option.utils';
 
+//TODO: add description with examples
 type MergeResult<T> = 
     T extends [x: infer Head, ...rest: infer Rest]
         ? Head extends [_: infer Key, __: infer Value]
@@ -18,9 +19,8 @@ type MergeResult<T> =
 const merge = <T extends Array<KeyValueTuple<any, R>>, R extends string>(...args: T): MergeResult<T> => 
     args.reduce((acc, [name, value]) => ({...acc, ...{[name]: value}}), {}) as MergeResult<T>;
 
-
+//TODO: add more examples
 const res = merge(['val', 1], ['foo', true], ['bar', 'val']);
-
 
 type mergeResultEx = MergeResult<[['a', number], ['b', string]]>
 

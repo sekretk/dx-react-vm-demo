@@ -1,5 +1,4 @@
-import { fold, pending, RemoteData, success } from '@devexperts/remote-data-ts';
-import { constNull } from 'fp-ts/lib/function';
+import { pending, RemoteData, success } from '@devexperts/remote-data-ts';
 import { createElement, memo, useEffect, useMemo, useState } from 'react';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { LiveData } from '@devexperts/rx-utils/dist/live-data.utils';
@@ -9,6 +8,7 @@ import { observable } from '@devexperts/rx-utils/dist/observable.utils';
 import { delay, distinctUntilChanged, share, switchMap } from 'rxjs/operators';
 import { render } from 'react-dom';
 import { merge, Observable, of } from 'rxjs';
+import { Profile, renderRemoteData } from './profile';
 
 const useObservable = <A>(fa: Observable<A>, initial: A): A => {
 	const [a, setA] = useState(initial);
@@ -22,33 +22,12 @@ const useSink = <A>(factory: () => Sink<A>, dependencies: unknown[]): A => {
 	useEffect(() => () => subscription.unsubscribe(), [subscription]);
 	return sa.value;
 };
-
-const renderRemoteData = <A>(
-	onSuccess: (a: A) => JSX.Element | null,
-): ((data: RemoteData<Error, A>) => JSX.Element | null) =>
-	fold(
-		constNull,
-		() => createElement('div', null, 'pending'),
-		() => createElement('div', null, 'failure'),
-		onSuccess,
-	);
-
-interface UserProfileProps {
-	readonly name: RemoteData<Error, string>;
-	readonly onNameUpdate: (name: string) => void;
-}
-const UserProfile = memo((props: UserProfileProps) =>
-	pipe(
-		props.name,
-		renderRemoteData(name => createElement('div', null, name)),
-	),
-);
 interface UserProfileViewModel {
 	readonly name: LiveData<Error, string>;
 	readonly updateName: (name: string) => void;
 }
 
-type UserID = '1' | '2' | '3';
+type UserID = string;
 
 const userIdNameMapper: Record<UserID, string> = {
 	'1': 'Homer J. Simpson',
@@ -60,8 +39,8 @@ const getMockDelay = () => 1_000 * (1 + Math.floor(Math.random()*1_000_000) % 5)
 
 interface UserService {
 	readonly getAllUserIds: () => LiveData<Error, string[]>;
-	readonly getUserName: (id: string) => LiveData<Error, string>;
-	readonly updateUserName: (id: string) => (name: string) => LiveData<Error, void>;
+	readonly getUserName: (id: UserID) => LiveData<Error, string>;
+	readonly updateUserName: (id: UserID) => (name: string) => LiveData<Error, void>;
 }
 
 const userService: Context<{ apiURL: string }, UserService> = () =>
@@ -105,6 +84,7 @@ const newUserProfileViewModel = context.combine(
 	},
 );
 
+
 interface UserProfileContainerProps {
 	readonly id: string;
 }
@@ -114,7 +94,7 @@ const UserProfileContainer = context.combine(
 		memo((props: UserProfileContainerProps) => {
 			const vm = useSink(() => ctx(props.id), [props.id]);
 			const name = useObservable(vm.name, pending);
-			return createElement(UserProfile, { name, onNameUpdate: vm.updateName });
+			return createElement(Profile, { name, onNameUpdate: vm.updateName });
 		}),
 );
 
@@ -166,7 +146,7 @@ const AppContainer = context.combine(
 
 const Root = context.combine(
 	context.defer(AppContainer, 'userService'),
-	userService,
+	userService, //Context<{apiURL: string}, UserService> = {apiURL: string} => Sink<UserService>
 	(getAppContainer, userService) =>
 		memo(() => {
 			console.log('Root create');

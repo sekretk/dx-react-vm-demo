@@ -1,7 +1,7 @@
 import { array, option } from "fp-ts"
 import { sequenceT } from "fp-ts/lib/Apply";
 import { constant, pipe } from "fp-ts/lib/function"
-import { Option, sequenceArray, some } from 'fp-ts/lib/Option';
+import { getLastMonoid, Option, sequenceArray, some } from 'fp-ts/lib/Option';
 import { Predicate } from "fp-ts/lib/Predicate";
 
 type TIssue = {
@@ -9,12 +9,12 @@ type TIssue = {
     b: number
 }
 
-const pred: Predicate<TIssue> = (val) => val.b === 5;
+//const pred: Predicate<TIssue> = (val) => val.b === 5;
 
-export const getFilteredHeader = (data: Option<{f: Option<TIssue>, s: Option<TIssue>}>): Option<TIssue> => 
+export const getFilteredHeader = (pred: Predicate<TIssue>) => (data: Option<{f: Option<TIssue>, s: Option<TIssue>}>): Option<TIssue> => 
     pipe(
         data,
-        option.map(xxx => [xxx.f, xxx.s]),//filtermap
+        option.map(xxx => [xxx.f, xxx.s]),//filtermap ?
         option.map(array.filter(option.fold(constant(false), pred))),
         option.chain(array.head),
         option.flatten
@@ -35,9 +35,11 @@ type Tail<T extends ReadonlyArray<any>> = T extends [head: any, ...tail: infer T
 const issueArray = [1,'2', true] as const;
 type test = Tail<typeof issueArray>
 
-type UnionType<T extends Array<any>> = 
-        T extends [infer F, ...Array<any>]
+// type UnionType<T extends Array<any>> = 
+//         T extends [infer F, ...Array<any>]
 
 //type AggregateFunction<A extends Array<any>> = (arg: A) => UnionType<A>;
 
 //const aggregate: AggregateFunction = ({a = 1}, {b = true}) => 
+
+
