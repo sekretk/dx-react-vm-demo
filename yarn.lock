@@ -1433,6 +1433,13 @@
   "resolved" "https://registry.npmjs.org/@types/query-string/-/query-string-5.1.0.tgz"
   "version" "5.1.0"
 
+"@types/ramda@^0.27.46":
+  "integrity" "sha512-PpHUGfV3AkUT57kP9GzS6NIHHebd5wHuA19tV/SDqrVNkHrJJSfNEq/imyt7JGKBdn7VgktXUN137mrI/shzkw=="
+  "resolved" "https://registry.npmjs.org/@types/ramda/-/ramda-0.27.46.tgz"
+  "version" "0.27.46"
+  dependencies:
+    "ts-toolbelt" "^6.15.1"
+
 "@types/react-dom@^17.0.9":
   "integrity" "sha512-8oz3NAUId2z/zQdFI09IMhQPNgIbiP8Lslhv39DIDamr846/0spjZK0vnrMak0iB8EKb9QFTTIdg2Wj2zH5a3g=="
   "resolved" "https://registry.npmjs.org/@types/react-dom/-/react-dom-17.0.10.tgz"
@@ -7008,6 +7015,11 @@
   "resolved" "https://registry.npmjs.org/quick-lru/-/quick-lru-4.0.1.tgz"
   "version" "4.0.1"
 
+"ramda@^0.27.1":
+  "integrity" "sha512-PgIdVpn5y5Yns8vqb8FzBUEYn98V3xcPgawAkkgj0YJ0qDsnHCiNmZYfOGMgOvoB0eWFLpYbhxUR3mxfDIMvpw=="
+  "resolved" "https://registry.npmjs.org/ramda/-/ramda-0.27.1.tgz"
+  "version" "0.27.1"
+
 "randombytes@^2.1.0":
   "integrity" "sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ=="
   "resolved" "https://registry.npmjs.org/randombytes/-/randombytes-2.1.0.tgz"
@@ -7379,11 +7391,6 @@
   "version" "1.2.0"
   dependencies:
     "queue-microtask" "^1.2.2"
-
-"rx@^4.1.0":
-  "integrity" "sha1-pfE/957zt0D+MKqAP7CfmIBdR4I="
-  "resolved" "https://registry.npmjs.org/rx/-/rx-4.1.0.tgz"
-  "version" "4.1.0"
 
 "rxjs-compatibility@0.0.3":
   "integrity" "sha1-R76ypVCRj+jqkNG/0/kCdZ+D3j0="
@@ -8330,6 +8337,16 @@
   dependencies:
     "glob" "^7.1.2"
 
+"ts-toolbelt@^6.15.1":
+  "integrity" "sha512-FZIXf1ksVyLcfr7M317jbB67XFJhOO1YqdTcuGaq9q5jLUoTikukZ+98TPjKiP2jC5CgmYdWWYs0s2nLSU0/1A=="
+  "resolved" "https://registry.npmjs.org/ts-toolbelt/-/ts-toolbelt-6.15.5.tgz"
+  "version" "6.15.5"
+
+"ts-toolbelt@^9.6.0":
+  "integrity" "sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w=="
+  "resolved" "https://registry.npmjs.org/ts-toolbelt/-/ts-toolbelt-9.6.0.tgz"
+  "version" "9.6.0"
+
 "tslib@^1.10.0", "tslib@^1.8.1", "tslib@^1.9.0":
   "integrity" "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg=="
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
@@ -8428,7 +8445,7 @@
   "resolved" "https://registry.npmjs.org/typelevel-ts/-/typelevel-ts-0.3.5.tgz"
   "version" "0.3.5"
 
-"typescript@^4.4.3", "typescript@>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta":
+"typescript@^4.4.4", "typescript@>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta":
   "integrity" "sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA=="
   "resolved" "https://registry.npmjs.org/typescript/-/typescript-4.4.4.tgz"
   "version" "4.4.4"
