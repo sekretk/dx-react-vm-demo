@@ -1,4 +1,4 @@
-import { None, Option, some, Some } from "fp-ts/lib/Option"
+import { None, Option, Some } from "fp-ts/lib/Option"
 import { IfStrictEquals, IsTrue } from "./test-utils";
 import { TypeCheckError } from './generic'
 import { sequenceT } from "fp-ts/lib/Apply";
