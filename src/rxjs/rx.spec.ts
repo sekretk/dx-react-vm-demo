@@ -10,7 +10,7 @@ describe('RXTEstCase', () => {
 	});
 
 
-    it('Switch map WORKING outside of scheduler scope', () => {
+    xit('Switch map WORKING outside of scheduler scope', () => {
         const obs1 = hot('--A-A');
         const obs2 = cold('-B');
         obs1.pipe(switchMap(() => obs2)).subscribe();
@@ -19,7 +19,7 @@ describe('RXTEstCase', () => {
     });
     
     //Here all '-' is collapsed
-    it('Switch map NOT WORKING in scheduler run', () => {
+    xit('Switch map NOT WORKING in scheduler run', () => {
         Scheduler.get().run(() => {
             const obs1 = hot('--A-A');
             const obs2 = cold('-B');
