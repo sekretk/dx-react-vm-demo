@@ -46,7 +46,7 @@ type rr = {a: string} & unknown;
 
 const ttt: MarbleObj<'ABC#$%@'>;
 
-type MarbleT = 'A' | 'B';
+type MarbleT = 'A'|'B'|'C'|'D'|'E'|'F'|'G'|'H'|'I'|'J'|'K'|'L'|'M'|'N'|'O'|'P'|'Q'|'R'|'S'|'T'|'U'|'V'|'W'|'X'|'Y'|'Z';
 type MarbleA = '-' | '^' | '|';
 
 type MarbleDetails<T extends string, R = {}> = 
@@ -60,4 +60,4 @@ type MarbleDetails<T extends string, R = {}> =
 
 const funct = <T extends string>(val: T, obj: MarbleDetails<T>) => {}
 
-funct('AB---|', {B: 1, A: 'asd'})
+funct('A---|', {B: 1, A: 'asd'})
