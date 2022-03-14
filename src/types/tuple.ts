@@ -2,6 +2,9 @@ import { boolean } from "fp-ts";
 import { FunctionN, pipe } from "fp-ts/lib/function";
 import { Refinement } from "fp-ts/lib/Refinement";
 import { never } from "fp-ts/lib/Task";
+import { Observable, of } from "rxjs";
+import { map, withLatestFrom } from "rxjs/operators";
+import { Guard } from "../sandbox/narrow";
 
 type ZipWithName<T extends Array<any>, U extends Array<string>> =
     T extends [head: infer THead, ...rest: infer TTail]
@@ -135,8 +138,36 @@ const issuedTuple: [number, string, boolean, string ] = [1, '1', true, ''];
 const isOne = (val: string): val is '1' => val === '1';
 const isOneN = (val: number): val is 1 => val === 1;
 
-const res = pipe(
-    issuedTuple,
-    tupleGuard(4, isOneN),
-    _ => _
+/**
+ * Filter and type guard operator
+ * @param guardPredicate Refinement predicate
+ */
+ export const guard =
+ <T, R extends T = T>(guardPredicate: Refinement<T, R>) =>
+ (source: Observable<T>): Observable<R> =>
+     new Observable<R>((subscriber) => {
+         source.subscribe({
+             next(value) {
+                 guardPredicate(value) && subscriber.next(value);
+             },
+             error(error) {
+                 subscriber.error(error);
+             },
+             complete() {
+                 subscriber.complete();
+             },
+         });
+     });
+ 
+pipe(
+    of(1),
+    withLatestFrom(of('1'), of(true)),
+    guard(tupleGuard(0, isOneN)),
+    guard(tupleGuard(1, isOne)),
+    map(tupleMap(2, _ => _.toString())),
+    map(([one, two, three]) => {
+        one //1 as const
+        two //'1' as const
+        three //'true': string
+    })
 )
