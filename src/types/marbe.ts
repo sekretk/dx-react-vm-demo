@@ -58,6 +58,6 @@ type MarbleDetails<T extends string, R = {}> =
                 : 'Unknow letter'
         : {};
 
-const funct = <T extends string>(val: T, obj: MarbleDetails<T>) => {}
+const fabricCold = <T extends string>(val: T, obj: MarbleDetails<T>) => {}
 
-funct('A---|', {B: 1, A: 'asd'})
+fabricCold('A---|', {A: 'asd'})
