@@ -67,6 +67,7 @@ type OnlyTwoOTuple<T extends any[]> = OnlyTuple<T, 2>;
 const onlyTwoElemns = <T extends any[]>(...val: OnlyTwoOTuple<T>): void => { };
 onlyTwoElemns(1, 2)
 
+//TODO: FIND OUT WAY TO SET ONLY ONE LIMIT CONSTANT TYPE
 type DecreaseNum = {
     1: 0
     2: 1,
@@ -74,6 +75,7 @@ type DecreaseNum = {
     4: 3
 }
 
+//TODO: FIND OUT WAY TO GENERATE IT
 type Nums = {
     1: 0
     2: 0 | 1,
