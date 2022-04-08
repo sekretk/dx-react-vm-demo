@@ -95,7 +95,7 @@ type ReplaceInTuple<T extends any[], N extends keyof DecreaseNum | 0, Replace, T
                 : never
         : Tail
 
-type ttt = ReplaceInTuple<[number, string, boolean], 3, undefined>;
+type ttt = ReplaceInTuple<[number, string, boolean], 1, undefined>;
 
 const tupleGuard = <T extends any[] & {'length': keyof DecreaseNum}, N extends Nums[T['length']] | 0, R extends T[N]>(num: N, guard: Refinement<T[N], R>) =>
     (tuple: T | ReplaceInTuple<T, N, R>): tuple is ReplaceInTuple<T, N, R> => guard(tuple[num]);
@@ -161,7 +161,7 @@ const isOneN = (val: number): val is 1 => val === 1;
  
 pipe(
     of(1),
-    withLatestFrom(of('1'), of(true)),
+    withLatestFrom(of('1'), of(true), of([])),
     guard(tupleGuard(0, isOneN)),
     guard(tupleGuard(1, isOne)),
     map(tupleMap(2, _ => _.toString())),
